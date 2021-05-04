@@ -1,0 +1,27 @@
+name: Build and Test Package
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkut Repository
+        uses: actions/checkout@v2
+
+      - name: Setup PureScript Tooling
+        uses: purescript-contrib/setup-purescript@main
+
+      - name: Cache PureScript dependencies
+        uses: actions/cache@v2
+        with:
+          key: spago-${{ hashFiles('**/*.dhall') }}
+          path: |
+            .spago
+            output
+
+      - name: Build Package
+        run: yarn build
+
+      - name: Test Package
+        run: yarn test
