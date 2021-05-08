@@ -8,6 +8,7 @@ import Prim.Boolean (False, True)
 import Prim.Symbol as Symbol
 import Type.Data.Boolean (class If, class Not)
 import Type.Data.List (class IsMember, type (:>), List', Nil')
+import Type.ShuntingYard.Types (PairK, type (\/))
 
 
 class MapT :: forall k l. (k -> TypeExpr l) -> List' k -> List' l -> Constraint
@@ -129,14 +130,7 @@ instance isOperatorEvaluate
   => Evaluate (IsOperator o) r
 
 
-data PairK
-
-foreign import data Pair :: forall k l. k -> l -> PairK
-
-infixr 0 type Pair as \/
-
-
-class SpanT :: forall k. (k -> TypeExpr Boolean) -> List' k -> PairK -> Constraint
+class SpanT :: forall k. (k -> TypeExpr Boolean) -> List' k -> PairK (List' k) (List' k) -> Constraint
 class SpanT p xs r | p xs -> r
 
 instance spanTNil :: SpanT p Nil' (Nil' \/ Nil')
@@ -153,12 +147,12 @@ foreign import data Span
   :: forall k
    . (k -> TypeExpr Boolean)
   -> List' k
-  -> TypeExpr PairK
+  -> TypeExpr (PairK (List' k) (List' k))
 
 instance spanEvaluate :: SpanT p xs r => Evaluate (Span p xs) r
 
 
-class BreakT :: forall k. (k -> TypeExpr Boolean) -> List' k -> PairK -> Constraint
+class BreakT :: forall k. (k -> TypeExpr Boolean) -> List' k -> PairK (List' k) (List' k) -> Constraint
 class BreakT p xs r | p xs -> r
 
 instance breakTNil :: BreakT p Nil' (Nil' \/ Nil')
@@ -175,7 +169,7 @@ foreign import data Break
   :: forall k
    . (k -> TypeExpr Boolean)
   -> List' k
-  -> TypeExpr PairK
+  -> TypeExpr (PairK (List' k) (List' k))
 
 instance breakEvalaute :: BreakT p xs r => Evaluate (Break p xs) r
 

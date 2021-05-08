@@ -53,3 +53,11 @@ instance operatorPrecedenceTPL :: OperatorPrecedenceT Plus P.D2
 instance operatorPrecedenceTMN :: OperatorPrecedenceT Minus P.D2
 instance operatorPrecedenceTTM :: OperatorPrecedenceT Times P.D3
 instance operatorPrecedenceTDV :: OperatorPrecedenceT Divide P.D3
+
+
+data PairK :: forall k_ l_. k_ -> l_ -> Type
+data PairK k l
+
+foreign import data Pair :: forall k l. k -> l -> PairK k l
+
+infixr 0 type Pair as \/
